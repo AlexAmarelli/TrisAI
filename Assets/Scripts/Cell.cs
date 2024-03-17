@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Cell : MonoBehaviour
 {
@@ -29,14 +30,18 @@ public class Cell : MonoBehaviour
         set { label = value; }
     }
 
+    private Button button;
+
     private void Awake()
     {
         label = GetComponentInChildren<TMP_Text>();
+        button = GetComponentInChildren<Button>();
     }
 
     public void PlayerUpdateCell()
     {
         label.text = "X";
+        button.interactable = false;
         gameManager.UpdateGameState(new Move(row, column));
     }
 
@@ -45,15 +50,18 @@ public class Cell : MonoBehaviour
         if (gameManager.PlayerTurn)
         {
             label.text = "X";
+            button.interactable = false;
         }
         else
         {
             label.text = "O";
+            button.interactable = false;
         }
     }
 
     public void UpdateCell()
     {
         label.text = "O";
+        button.interactable = false;
     }
 }

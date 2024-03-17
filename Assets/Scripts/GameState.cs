@@ -18,7 +18,13 @@ public class GameState
 
     public GameState(int[,] board)
     {
-        Board = board;
+        for (int i = 0; i < board.GetLength(0); i++)
+        {
+            for(int j = 0; j < board.GetLength(1); j++)
+            {
+                Board[i,j] = board[i,j];
+            }
+        }
     }
 
     public GameState(Move move, int value)
@@ -31,5 +37,24 @@ public class GameState
     public void ExecuteMove(Move move, int value)
     {
         Board[move.Row, move.Col] = value;
+    }
+
+    public List<Move> GetMoves()
+    {
+        List<Move> list = new List<Move>();
+
+        for (int i = 0; i < board.GetLength(0); i++)
+        {
+            for(int j = 0; j < board.GetLength(1); j++)
+            {
+                int value = board[i,j];
+                if(value == 0)
+                {
+                    list.Add(new Move(i, j));
+                }
+            }
+        }
+
+        return list;
     }
 }
