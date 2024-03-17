@@ -36,4 +36,9 @@ public class ScenesManager : MonoBehaviour
         Time.timeScale = 1;
         SceneManager.LoadScene(SceneName.Game.ToString(), LoadSceneMode.Single);
     }
+
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
 }
