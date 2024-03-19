@@ -1,15 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class GameManager : MonoBehaviour
+public class TicTacToe : MonoBehaviour
 {
     [SerializeField] private Button[] buttons;
 
@@ -143,8 +141,8 @@ public class GameManager : MonoBehaviour
     {
         int score = Evaluate(board);
 
-        if (score == 10) return score;  // X won
-        if (score == -10) return score; // O won
+        if (score == 10) return score ;  // X won
+        if (score == -10) return score ; // O won
         if (!isMovesLeft(board)) return 0;
 
         if (isMaximizingPlayer)
