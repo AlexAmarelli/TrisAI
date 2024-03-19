@@ -550,7 +550,7 @@ MonoBehaviour:
   - {fileID: 567480590}
   - {fileID: 980648693}
   - {fileID: 1945599936}
-  maxDepth: 10
+  playerTurn: 1
   endgamePanel: {fileID: 2108505735}
   endgameDescription: {fileID: 55704821}
 --- !u!114 &206994211

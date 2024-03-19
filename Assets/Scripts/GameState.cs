@@ -4,57 +4,23 @@ using UnityEngine;
 
 public class GameState 
 {
-    private int[,] board = new int[3,3];
-    public int[,] Board
+    private char[,] state = new char[3, 3];
+    public char[,] State
     {
-        get { return board; }
-        set { board = value; }
+        get { return state; }
+        set { state = value; }
     }
 
-    public GameState()
+    private Move move;
+    public Move Move
     {
-        board = new int[3, 3];
+        get { return move; }
+        set { move = value; }
     }
 
-    public GameState(int[,] board)
+    public GameState(char[,] possibleState, Move move)
     {
-        for (int i = 0; i < board.GetLength(0); i++)
-        {
-            for(int j = 0; j < board.GetLength(1); j++)
-            {
-                Board[i,j] = board[i,j];
-            }
-        }
-    }
-
-    public GameState(Move move, int value)
-    {
-        int[,] newBoard = new int[3, 3];
-        newBoard[move.Row, move.Col] = value;
-        Board = newBoard;
-    }
-
-    public void ExecuteMove(Move move, int value)
-    {
-        Board[move.Row, move.Col] = value;
-    }
-
-    public List<Move> GetMoves()
-    {
-        List<Move> list = new List<Move>();
-
-        for (int i = 0; i < board.GetLength(0); i++)
-        {
-            for(int j = 0; j < board.GetLength(1); j++)
-            {
-                int value = board[i,j];
-                if(value == 0)
-                {
-                    list.Add(new Move(i, j));
-                }
-            }
-        }
-
-        return list;
-    }
+        this.State = possibleState;
+        this.move = move;
+    }    
 }

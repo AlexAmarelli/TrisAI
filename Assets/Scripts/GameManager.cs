@@ -13,7 +13,11 @@ public class GameManager : MonoBehaviour
     private List<Cell> cells;
 
     [SerializeField]
-    private int maxDepth;
+    private bool playerTurn;
+    public bool PlayerTurn
+    {
+        get { return playerTurn; }
+    }
 
     [Header("Endgame message")] 
 
@@ -23,206 +27,170 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private TMP_Text endgameDescription;
 
-    private GameState gameState;
+    //VARIABLES
 
-    private List<Move> moves = new List<Move>();
+    private GameBoard gameBoard;
 
-    private bool playerTurn;
-    public bool PlayerTurn 
-    { 
-        get { return playerTurn; } 
+    private char playerChar = 'X';
+    public char PlayerChar
+    {
+        get { return playerChar; }
     }
 
-    private int winScore = 3;
-
-    private Move playerMove;
-
-    private int currentMovesLength;
-
+    private char aiChar = 'O';
+    public char AIChar
+    {
+        get { return aiChar; }
+    }
+    
     private bool gameEnded;
 
     private void Start()
     {
-        gameEnded = false;
+        // Initialize empty 3x3 board
+        gameBoard = new GameBoard();
 
-        // Initialize empty 3x3 board with all zeros
-        gameState = new GameState();
+        gameEnded = false;        
 
-        // Init list of possible moves
-        for(int i = 0; i < gameState.Board.GetLength(0); i++)
+        if (!playerTurn)
         {
-            for(int j = 0; j  < gameState.Board.GetLength(1); j++)
-            {
-                moves.Add(new Move(i, j, 0));
-            }
-        }
-
-        playerTurn = true;
-    }
-
-    public void UpdateGameState(Move newMove)
-    {
-        if (playerTurn)
-        {
-            // Updates board
-            gameState.ExecuteMove(newMove, 1);
-
-            //In an AIvAI game, updates board cell
-            if (GameData.allAI)
-            {
-                cells.Find(x => x.Row == newMove.Row && x.Column == newMove.Col).UpdateCell(playerTurn);
-            }
-
-            // Removes move frome moves list
-            Move removedMove = moves.Find(x => x.Row == newMove.Row && x.Col == newMove.Col);
-            playerMove = removedMove;
-            moves.Remove(removedMove);
-
-            CheckEndgame(gameState);
-
-            //Starts AI turn
-            playerTurn = false;
-            AITurn();
-        }
-        else
-        {
-            // Updates board
-            gameState.ExecuteMove(newMove, -1);
-            cells.Find(x => x.Row == newMove.Row && x.Column == newMove.Col).UpdateCell();
-
-            // Removes move frome moves list
-            Move removedMove = moves.Find(x => x.Row == newMove.Row && x.Col == newMove.Col);
-            moves.Remove(removedMove);
-
-            CheckEndgame(gameState);
-
-            playerTurn = true;
+            AIMove();
         }
     }
 
-    private void AITurn()
+    public void PlayerMove(Move move)
     {
-        GameState currentGameState = new GameState(gameState.Board);
+        // Updates board
+        gameBoard.ExecuteMove(move, playerChar);
+        CheckEndgame(gameBoard);
 
-        Move aiMove = Minimax(currentGameState, playerMove, maxDepth, true);
-        UpdateGameState(aiMove);
-    }
-
-    private Move Minimax(GameState currentGameState, Move currentMove, int depth, bool maximazingPlayer)
-    {
-        int score = Evaluate(currentGameState.Board);
-
-        List<Move> possibleMoves = currentGameState.GetMoves();
-
-        if (possibleMoves.Count == 0 || score != 0 || depth == 0)
-        {
-            currentMove.Score = score;
-            //Debug.Log(currentMove);
-            return currentMove;
-        }
-
-        Move bestMove = null;
-
-        if (maximazingPlayer)
-        {
-            int value = -1000;
-
-            foreach (Move m in possibleMoves)
-            {
-                GameState nextGameState = new GameState(currentGameState.Board);
-                nextGameState.ExecuteMove(m, -1);
-                Move nextMove = Minimax(nextGameState, m, depth - 1, false);
-                if (nextMove.Score > value)
-                {
-                    bestMove = nextMove;
-                    value = Mathf.Max(value, nextMove.Score);
-                    bestMove.Score = value;
-                }
-            }
-
-            //Debug.Log(bestMove);
-            return bestMove;
-        }
-        else
-        {
-            int value = 1000;
-
-            foreach (Move m in possibleMoves)
-            {
-                GameState nextGameState = new GameState(currentGameState.Board);
-                nextGameState.ExecuteMove(m, 1);
-                Move nextMove = Minimax(nextGameState, m, depth - 1, true);
-                if (nextMove.Score < value)
-                {
-                    bestMove = nextMove;
-                    value = Mathf.Min(value, nextMove.Score);
-                    bestMove.Score = value;
-                }
-            }
-
-            //Debug.Log(bestMove);
-            return bestMove;
-        }
-    }
-
-    private int Evaluate(int[,] board)
-    {
-        //Check diagonal
-        if (board[1,1] != 0 &&
-            ((board[0,0] == board[1,1] && board[2,2] == board[1,1]) || 
-             (board[0,2] == board[1,1] && board[2,0] == board[1,1])))
-        {
-            return board[1,1];
-        }
-
-        //Checking horizontal 
-        for (int i = 0; i < board.GetLength(0); i++)
-        {
-            if (board[i, 0] != 0 && board[i, 0] == board[i, 1] && board[i, 2] == board[i, 1])
-            {
-                return board[i, 0];
-            }
-        }
-
-        //Checking horizontal 
-        for (int i = 0; i < board.GetLength(0); i++)
-        {
-            if (board[0, i] != 0 && board[0, i] == board[1, i] && board[2, i] == board[1, i])
-            {
-                return board[0, i];
-            }
-        }
-
-        return 0;
-    }    
-
-    private void CheckEndgame(GameState state)
-    {
+        // If game hasn't ended makes the AI move
         if (!gameEnded)
         {
-            int endgame = Evaluate(state.Board);
-
-            if (endgame > 0)
-            {
-                endgameDescription.text = "YOU WON!";
-                endgamePanel.SetActive(true);
-                gameEnded = true;
-            }
-            else if (endgame < 0)
-            {
-                endgameDescription.text = "AI WON!";
-                endgamePanel.SetActive(true);
-                gameEnded = true;
-            }
-            else
-            {
-                if (state.GetMoves().Count == 0)
-                {
-                    endgameDescription.text = "DRAW!";
-                    endgamePanel.SetActive(true);
-                    gameEnded = true;
-                }
-            }
+            // Starts AI turn
+            playerTurn = false;
+            AIMove();
         }        
     }
+
+    public void AIMove() 
+    { 
+        //Init AI's best score and best move
+        int bestScore = int.MinValue;
+        Move bestMove = new Move(-1, -1);
+
+        // Iterates through all the moves available given the current game state
+        // and searches for the best move using Minimax
+        foreach (GameState possibleMove in gameBoard.GetNextStates(aiChar))
+        {
+            var moveScore = Minimax(possibleMove.State, 0, true);
+            if (moveScore <= bestScore)
+            {
+                continue;
+            }
+
+            bestScore = moveScore;
+            bestMove = possibleMove.Move;
+        }
+
+        // Executes AI best move
+        if (bestMove.Row != -1 && bestMove.Col != -1)
+        {
+            gameBoard.ExecuteMove(bestMove, aiChar);
+            cells.Find(x => x.Row == bestMove.Row && x.Column == bestMove.Col).UpdateCell();
+        }
+
+        //Checks if game has ended
+        CheckEndgame(gameBoard);
+    }
+
+    private int Minimax(char[,] board, int depth, bool isMaximizingPlayer)
+    {
+        // BASE CASE: checks if current node is a terminal node and
+        // assigns it a score based on who wins or if it's a draw
+        var score = Evaluate(board);
+
+        if (score == 10) return score + 1 / depth; // X won
+        if (score == -10) return score - 1 / depth; // O won
+        if (!gameBoard.IsMovesLeft()) return 0;
+
+        // RECURSIVE MINIMAX STEP
+        var bestScore = int.MinValue;
+
+        foreach (GameState possibleState in gameBoard.GetNextStates(playerChar))
+        {
+            bestScore = isMaximizingPlayer
+                ? Mathf.Max(bestScore, Minimax(possibleState.State, depth + 1, false))
+                : Mathf.Min(bestScore, Minimax(possibleState.State, depth + 1, true));
+        }
+
+        return bestScore;
+    }
+
+    private int Evaluate(char[,] board)
+    {
+        // Row victories
+        for (var row = 0; row < 3; row++)
+            if (board[row, 0] == board[row, 1] && board[row, 1] == board[row, 2])
+            {
+                if (board[row, 0] == 'X')
+                    return +10;
+                if (board[row, 0] == 'O')
+                    return -10;
+            }
+
+        // Column victories
+        for (var col = 0; col < 3; col++)
+            if (board[0, col] == board[1, col] && board[1, col] == board[2, col])
+            {
+                if (board[0, col] == 'X')
+                    return +10;
+                if (board[0, col] == 'O')
+                    return -10;
+            }
+
+        // Diagonals victories
+        if (board[0, 0] == board[1, 1] && board[1, 1] == board[2, 2])
+        {
+            if (board[0, 0] == 'X')
+                return +10;
+            if (board[0, 0] == 'O')
+                return -10;
+        }
+
+        if (board[0, 2] == board[1, 1] && board[1, 1] == board[2, 0])
+        {
+            if (board[0, 2] == 'X')
+                return +10;
+            if (board[0, 2] == 'O')
+                return -10;
+        }
+
+        // No victory found
+        return 0;
+    }
+
+    private void CheckEndgame(GameBoard state)
+    {
+        int endgame = Evaluate(state.Board);
+
+        if (endgame > 0)
+        {
+            endgameDescription.text = "YOU WON!";
+            endgamePanel.SetActive(true);
+            gameEnded = true;
+        }
+        else if (endgame < 0)
+        {
+            endgameDescription.text = "AI WON!";
+            endgamePanel.SetActive(true);
+            gameEnded = true;
+        }
+        else if (!state.IsMovesLeft())
+        {
+            endgameDescription.text = "DRAW!";
+            endgamePanel.SetActive(true);
+            gameEnded = true;
+        }
+    }   
 }

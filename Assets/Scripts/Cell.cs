@@ -40,28 +40,28 @@ public class Cell : MonoBehaviour
 
     public void PlayerUpdateCell()
     {
-        label.text = "X";
+        label.text = gameManager.PlayerChar.ToString();
         button.interactable = false;
-        gameManager.UpdateGameState(new Move(row, column));
+        gameManager.PlayerMove(new Move(row, column));
     }
 
     public void UpdateCell(bool playerTurn) 
     {
         if (gameManager.PlayerTurn)
         {
-            label.text = "X";
+            label.text = gameManager.PlayerChar.ToString();
             button.interactable = false;
         }
         else
         {
-            label.text = "O";
+            label.text = gameManager.AIChar.ToString();
             button.interactable = false;
         }
     }
 
     public void UpdateCell()
     {
-        label.text = "O";
+        label.text = gameManager.AIChar.ToString();
         button.interactable = false;
     }
 }

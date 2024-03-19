@@ -19,20 +19,6 @@ public class Move
         set { col = value; }
     }
 
-    private int score;
-    public int Score
-    {
-        get { return score; }
-        set { score = value; }
-    }
-
-    public Move(int row, int col, int score)
-    {
-        Row = row;        
-        Col = col;        
-        Score = score;        
-    }
-
     public Move(int row, int col)
     {
         Row = row;
@@ -41,6 +27,6 @@ public class Move
 
     public override string ToString()
     {
-        return $"Row: {row}, Col: {col}, Score: {score}";
+        return $"Row: {row}, Col: {col}";
     }
 }
