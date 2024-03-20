@@ -552,19 +552,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b45bbed4d322c534aa6b6294890c0f41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttons:
-  - {fileID: 2099828194}
-  - {fileID: 1142608215}
-  - {fileID: 1975219410}
-  - {fileID: 1567839717}
-  - {fileID: 1751195934}
-  - {fileID: 876588866}
-  - {fileID: 567480591}
-  - {fileID: 980648694}
-  - {fileID: 1945599937}
+  cells:
+  - {fileID: 2099828197}
+  - {fileID: 1142608218}
+  - {fileID: 1975219413}
+  - {fileID: 1567839720}
+  - {fileID: 1751195937}
+  - {fileID: 876588869}
+  - {fileID: 567480594}
+  - {fileID: 980648697}
+  - {fileID: 1945599940}
+  playerTurn: 1
   endgamePanel: {fileID: 2108505735}
   endgameDescription: {fileID: 55704821}
-  AIStart: 0
 --- !u!1 &232593803
 GameObject:
   m_ObjectHideFlags: 0
@@ -1447,6 +1447,7 @@ GameObject:
   - component: {fileID: 567480593}
   - component: {fileID: 567480592}
   - component: {fileID: 567480591}
+  - component: {fileID: 567480594}
   m_Layer: 5
   m_Name: Cell (6)
   m_TagString: Untagged
@@ -1518,9 +1519,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 206994212}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: PlayerMove
+      - m_Target: {fileID: 567480594}
+        m_TargetAssemblyTypeName: Cell, Assembly-CSharp
+        m_MethodName: PlayerUpdateCell
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1568,6 +1569,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 567480588}
   m_CullTransparentMesh: 1
+--- !u!114 &567480594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 567480588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 766757367cc2bef489035f5b13e29d10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameManager: {fileID: 206994212}
+  row: 2
+  column: 0
 --- !u!1 &616754164
 GameObject:
   m_ObjectHideFlags: 0
@@ -1848,6 +1864,7 @@ GameObject:
   - component: {fileID: 876588868}
   - component: {fileID: 876588867}
   - component: {fileID: 876588866}
+  - component: {fileID: 876588869}
   m_Layer: 5
   m_Name: Cell (5)
   m_TagString: Untagged
@@ -1919,9 +1936,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 206994212}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: PlayerMove
+      - m_Target: {fileID: 876588869}
+        m_TargetAssemblyTypeName: Cell, Assembly-CSharp
+        m_MethodName: PlayerUpdateCell
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1969,6 +1986,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 876588863}
   m_CullTransparentMesh: 1
+--- !u!114 &876588869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 876588863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 766757367cc2bef489035f5b13e29d10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameManager: {fileID: 206994212}
+  row: 1
+  column: 2
 --- !u!1 &877497621
 GameObject:
   m_ObjectHideFlags: 0
@@ -2115,6 +2147,7 @@ GameObject:
   - component: {fileID: 980648696}
   - component: {fileID: 980648695}
   - component: {fileID: 980648694}
+  - component: {fileID: 980648697}
   m_Layer: 5
   m_Name: Cell (7)
   m_TagString: Untagged
@@ -2186,9 +2219,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 206994212}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: PlayerMove
+      - m_Target: {fileID: 980648697}
+        m_TargetAssemblyTypeName: Cell, Assembly-CSharp
+        m_MethodName: PlayerUpdateCell
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2236,6 +2269,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 980648691}
   m_CullTransparentMesh: 1
+--- !u!114 &980648697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 980648691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 766757367cc2bef489035f5b13e29d10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameManager: {fileID: 206994212}
+  row: 2
+  column: 1
 --- !u!1 &1097055626
 GameObject:
   m_ObjectHideFlags: 0
@@ -2321,6 +2369,7 @@ GameObject:
   - component: {fileID: 1142608217}
   - component: {fileID: 1142608216}
   - component: {fileID: 1142608215}
+  - component: {fileID: 1142608218}
   m_Layer: 5
   m_Name: Cell (1)
   m_TagString: Untagged
@@ -2392,9 +2441,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 206994212}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: PlayerMove
+      - m_Target: {fileID: 1142608218}
+        m_TargetAssemblyTypeName: Cell, Assembly-CSharp
+        m_MethodName: PlayerUpdateCell
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2442,6 +2491,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1142608212}
   m_CullTransparentMesh: 1
+--- !u!114 &1142608218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1142608212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 766757367cc2bef489035f5b13e29d10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameManager: {fileID: 206994212}
+  row: 0
+  column: 1
 --- !u!1 &1216502808
 GameObject:
   m_ObjectHideFlags: 0
@@ -2876,6 +2940,7 @@ GameObject:
   - component: {fileID: 1567839719}
   - component: {fileID: 1567839718}
   - component: {fileID: 1567839717}
+  - component: {fileID: 1567839720}
   m_Layer: 5
   m_Name: Cell (3)
   m_TagString: Untagged
@@ -2947,9 +3012,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 206994212}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: PlayerMove
+      - m_Target: {fileID: 1567839720}
+        m_TargetAssemblyTypeName: Cell, Assembly-CSharp
+        m_MethodName: PlayerUpdateCell
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2997,6 +3062,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1567839714}
   m_CullTransparentMesh: 1
+--- !u!114 &1567839720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1567839714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 766757367cc2bef489035f5b13e29d10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameManager: {fileID: 206994212}
+  row: 1
+  column: 0
 --- !u!1 &1686886195
 GameObject:
   m_ObjectHideFlags: 0
@@ -3101,6 +3181,7 @@ GameObject:
   - component: {fileID: 1751195936}
   - component: {fileID: 1751195935}
   - component: {fileID: 1751195934}
+  - component: {fileID: 1751195937}
   m_Layer: 5
   m_Name: Cell (4)
   m_TagString: Untagged
@@ -3172,9 +3253,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 206994212}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: PlayerMove
+      - m_Target: {fileID: 1751195937}
+        m_TargetAssemblyTypeName: Cell, Assembly-CSharp
+        m_MethodName: PlayerUpdateCell
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3222,6 +3303,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1751195931}
   m_CullTransparentMesh: 1
+--- !u!114 &1751195937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1751195931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 766757367cc2bef489035f5b13e29d10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameManager: {fileID: 206994212}
+  row: 1
+  column: 1
 --- !u!1 &1771149583
 GameObject:
   m_ObjectHideFlags: 0
@@ -3500,6 +3596,7 @@ GameObject:
   - component: {fileID: 1945599939}
   - component: {fileID: 1945599938}
   - component: {fileID: 1945599937}
+  - component: {fileID: 1945599940}
   m_Layer: 5
   m_Name: Cell (8)
   m_TagString: Untagged
@@ -3571,9 +3668,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 206994212}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: PlayerMove
+      - m_Target: {fileID: 1945599940}
+        m_TargetAssemblyTypeName: Cell, Assembly-CSharp
+        m_MethodName: PlayerUpdateCell
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3621,6 +3718,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1945599934}
   m_CullTransparentMesh: 1
+--- !u!114 &1945599940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1945599934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 766757367cc2bef489035f5b13e29d10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameManager: {fileID: 206994212}
+  row: 2
+  column: 2
 --- !u!1 &1975219407
 GameObject:
   m_ObjectHideFlags: 0
@@ -3633,6 +3745,7 @@ GameObject:
   - component: {fileID: 1975219412}
   - component: {fileID: 1975219411}
   - component: {fileID: 1975219410}
+  - component: {fileID: 1975219413}
   m_Layer: 5
   m_Name: Cell (2)
   m_TagString: Untagged
@@ -3704,9 +3817,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 206994212}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: PlayerMove
+      - m_Target: {fileID: 1975219413}
+        m_TargetAssemblyTypeName: Cell, Assembly-CSharp
+        m_MethodName: PlayerUpdateCell
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3754,6 +3867,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1975219407}
   m_CullTransparentMesh: 1
+--- !u!114 &1975219413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1975219407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 766757367cc2bef489035f5b13e29d10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameManager: {fileID: 206994212}
+  row: 0
+  column: 2
 --- !u!1 &2062894703
 GameObject:
   m_ObjectHideFlags: 0
@@ -3900,6 +4028,7 @@ GameObject:
   - component: {fileID: 2099828196}
   - component: {fileID: 2099828195}
   - component: {fileID: 2099828194}
+  - component: {fileID: 2099828197}
   m_Layer: 5
   m_Name: Cell
   m_TagString: Untagged
@@ -3971,9 +4100,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 206994212}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: PlayerMove
+      - m_Target: {fileID: 2099828197}
+        m_TargetAssemblyTypeName: Cell, Assembly-CSharp
+        m_MethodName: PlayerUpdateCell
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4021,6 +4150,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2099828192}
   m_CullTransparentMesh: 1
+--- !u!114 &2099828197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2099828192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 766757367cc2bef489035f5b13e29d10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameManager: {fileID: 206994212}
+  row: 0
+  column: 0
 --- !u!1 &2108505735
 GameObject:
   m_ObjectHideFlags: 0

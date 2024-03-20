@@ -11,9 +11,16 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private Button[] buttons;
+    [Header("Game Variables")]
+    [SerializeField]
+    private List<Cell> cells;
 
-    //[SerializeField] private TMP_Text gameStatus;
+    [SerializeField]
+    private bool playerTurn;
+    public bool PlayerTurn
+    {
+        get { return playerTurn; }
+    }
 
     [Header("Endgame message")]
 
@@ -23,73 +30,91 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private TMP_Text endgameDescription;
 
-    [SerializeField] private bool AIStart;
+    //VARIABLES
 
-    private readonly char[,] board = new char[3, 3];
+    private GameBoard gameBoard;
 
-    private void Awake()
+    private GameBoard currentBoard;
+
+    private char playerChar = 'X';
+    public char PlayerChar
     {
-        if (AIStart)
-            MakeAIMove();
+        get { return playerChar; }
     }
 
-    public void PlayerMove()
+    private char aiChar = 'O';
+    public char AIChar
     {
-        GameObject selectedButton = EventSystem.current.currentSelectedGameObject;
-        int index = Array.IndexOf(buttons, selectedButton.GetComponent<Button>());
-        int x = index / 3;
-        int y = index % 3;
+        get { return aiChar; }
+    }
 
-        if (board[x, y] == '\0') // Check if cell is empty
+    private bool gameEnded;
+
+    private void Start()
+    {
+        // Initialize empty 3x3 board
+        gameBoard = new GameBoard();
+
+        gameEnded = false;
+
+        if (!playerTurn)
         {
-            board[x, y] = 'X'; // 'X' for the player
-            UpdateButtonUI(x, y, 'X');
-            CheckEndgame();
-
-            MakeAIMove();
+            AIMove();
         }
     }
 
-    void MakeAIMove()
+    public void PlayerMove(Move move)
+    {
+        // Updates board
+        gameBoard.ExecuteMove(move, playerChar);
+        CheckEndgame();
+
+        // If game hasn't ended makes the AI move
+        if (!gameEnded)
+        {
+            // Starts AI turn
+            playerTurn = false;
+            AIMove();
+        }
+    }
+
+    void AIMove()
     {
         int bestScore = int.MaxValue;
-        int[] bestMove = { -1, -1 };
+        Move bestMove = new Move(-1, -1);
+
+        currentBoard = new GameBoard();
+        currentBoard.Board = (char[,]) gameBoard.Board.Clone();
 
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 3; j++)
             {
-                if (board[i, j] == '\0')
+                if (currentBoard.Board[i, j] == '\0')
                 {
-                    board[i, j] = 'O';
-                    int score = Minimax(board, 0, true);
-                    board[i, j] = '\0';
+                    Move currentMove = new Move(i, j);  
+                    currentBoard.ExecuteMove(currentMove, aiChar);
+                    int score = Minimax(currentBoard, 0, true);
+                    currentBoard.ExecuteMove(currentMove, '\0');
 
                     if (score < bestScore)
                     {
                         bestScore = score;
-                        bestMove[0] = i;
-                        bestMove[1] = j;
+                        bestMove = currentMove;
                     }
                 }
             }
         }
 
-        // AI best move
-        if (bestMove[0] != -1)
+        // Executes AI best move
+        if (bestMove.Row != -1 && bestMove.Col != -1)
         {
-            board[bestMove[0], bestMove[1]] = 'O';
-            UpdateButtonUI(bestMove[0], bestMove[1], 'O');
+            gameBoard.ExecuteMove(bestMove, aiChar);
+            cells.Find(x => x.Row == bestMove.Row && x.Column == bestMove.Col).UpdateCell();
         }
 
+        //Checks if game has ended
         CheckEndgame();
-    }
-
-    public void UpdateButtonUI(int x, int y, char playerSymbol)
-    {
-        int index = x * 3 + y;
-        buttons[index].GetComponentInChildren<TextMeshProUGUI>().text = playerSymbol.ToString();
-        buttons[index].interactable = false;
     }
 
     int Evaluate(char[,] board)
@@ -139,68 +164,37 @@ public class GameManager : MonoBehaviour
         return 0;
     }
 
-    int Minimax(char[,] board, int depth, bool isMaximizingPlayer)
+    int Minimax(GameBoard board, int depth, bool isMaximizingPlayer)
     {
-        int score = Evaluate(board);
+        int score = Evaluate(board.Board);
 
-        if (score == 10) return score;  // X won
-        if (score == -10) return score; // O won
-        if (!isMovesLeft(board)) return 0;
+        if (score == 10) return score + depth;  // X won
+        if (score == -10) return score - depth; // O won
+        if (!board.IsMovesLeft()) return 0;
 
-        if (isMaximizingPlayer)
-        {
-            int bestScore = int.MinValue;
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    if (board[i, j] == '\0')
-                    {
-                        board[i, j] = 'X';
-                        bestScore = Mathf.Max(bestScore, Minimax(board, depth + 1, !isMaximizingPlayer));
-                        board[i, j] = '\0';
-                    }
-                }
-            }
-            return bestScore;
-        }
-        else
-        {
-            int bestScore = int.MaxValue;
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    if (board[i, j] == '\0')
-                    {
-                        board[i, j] = 'O';
-                        bestScore = Mathf.Min(bestScore, Minimax(board, depth + 1, !isMaximizingPlayer));
-                        board[i, j] = '\0';
-                    }
-                }
-            }
-            return bestScore;
-        }
-    }
+        int bestScore = isMaximizingPlayer ? int.MinValue : int.MaxValue;
 
-    bool isMovesLeft(char[,] board)
-    {
-        // Check if game is not over
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 3; j++)
             {
-                // Check if at least one cell is not filled with 'X' or 'O'
-                if (board[i, j] == '\0')
-                    return true;
+                if (board.Board[i, j] == '\0')
+                {
+                    char currentChar = isMaximizingPlayer ? playerChar : aiChar;
+                    board.ExecuteMove(new Move(i, j), currentChar);
+                    bestScore = isMaximizingPlayer
+                        ? Mathf.Max(bestScore, Minimax(board, depth + 1, false))
+                        : Mathf.Min(bestScore, Minimax(board, depth + 1, true));
+                    board.ExecuteMove(new Move(i, j), '\0');
+                }
             }
         }
-        return false;
+        return bestScore;
     }
 
     private void CheckEndgame()
     {
-        int endgame = Evaluate(board);
+        int endgame = Evaluate(gameBoard.Board);
 
         if (endgame > 0)
         {
@@ -214,22 +208,11 @@ public class GameManager : MonoBehaviour
             endgamePanel.SetActive(true);
             //gameEnded = true;
         }
-        else if (!isMovesLeft(board))
+        else if (!gameBoard.IsMovesLeft())
         {
             endgameDescription.text = "DRAW!";
             endgamePanel.SetActive(true);
             //gameEnded = true;
         }
-    }
-
-    private void DisableAllButtons()
-    {
-        for (var i = 0; i < buttons.Length; i++) buttons[i].interactable = false;
-    }
-
-    private IEnumerator Reload()
-    {
-        yield return new WaitForSeconds(2f);
-        SceneManager.LoadScene("Main");
     }
 }
