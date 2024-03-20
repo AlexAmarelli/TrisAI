@@ -78,31 +78,28 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void AIMove()
+    private void AIMove()
     {
+        //Initializes bestScore to MaxValue (minimizing turn)
         int bestScore = int.MaxValue;
         Move bestMove = new Move(-1, -1);
 
+        //Creates a copy of current game board
         currentBoard = new GameBoard();
         currentBoard.Board = (char[,]) gameBoard.Board.Clone();
 
-        for (int i = 0; i < 3; i++)
+        //Starts minimax for each possible moves after player move
+        foreach (Move currentMove in currentBoard.GetNextMoves())
         {
-            for (int j = 0; j < 3; j++)
-            {
-                if (currentBoard.Board[i, j] == '\0')
-                {
-                    Move currentMove = new Move(i, j);  
-                    currentBoard.ExecuteMove(currentMove, aiChar);
-                    int score = Minimax(currentBoard, 0, true);
-                    currentBoard.ExecuteMove(currentMove, '\0');
+            currentBoard.ExecuteMove(currentMove, aiChar);
+            int score = Minimax(currentBoard, 0, true);
+            currentBoard.ExecuteMove(currentMove, '\0');
 
-                    if (score < bestScore)
-                    {
-                        bestScore = score;
-                        bestMove = currentMove;
-                    }
-                }
+            //It's a minimizing turn, so updates bestScore if score < bestScore
+            if (score < bestScore)
+            {
+                bestScore = score;
+                bestMove = currentMove;
             }
         }
 
@@ -117,102 +114,66 @@ public class GameManager : MonoBehaviour
         CheckEndgame();
     }
 
-    int Evaluate(char[,] board)
+    private int Minimax(GameBoard board, int depth, bool isMaximizingPlayer)
     {
-        // Row victories
-        for (int row = 0; row < 3; row++)
+        //Checks current node's score
+        int score = board.Evaluate();
+
+        //BASE STEP
+
+        //If Player won
+        if (score == 10)
         {
-            if (board[row, 0] == board[row, 1] && board[row, 1] == board[row, 2])
-            {
-                if (board[row, 0] == 'X')
-                    return +10;
-                else if (board[row, 0] == 'O')
-                    return -10;
-            }
+            return score + depth;
         }
 
-        // Column victories
-        for (int col = 0; col < 3; col++)
+        //If AI won
+        if (score == -10)
         {
-            if (board[0, col] == board[1, col] && board[1, col] == board[2, col])
-            {
-                if (board[0, col] == 'X')
-                    return +10;
-                else if (board[0, col] == 'O')
-                    return -10;
-            }
+            return score - depth; 
         }
 
-        // Diagonals victories
-        if (board[0, 0] == board[1, 1] && board[1, 1] == board[2, 2])
+        //If Draw
+        if (!board.IsMovesLeft())
         {
-            if (board[0, 0] == 'X')
-                return +10;
-            else if (board[0, 0] == 'O')
-                return -10;
-
-        }
-        if (board[0, 2] == board[1, 1] && board[1, 1] == board[2, 0])
-        {
-            if (board[0, 2] == 'X')
-                return +10;
-            else if (board[0, 2] == 'O')
-                return -10;
+            return 0;
         }
 
-        // No victory found
-        return 0;
-    }
-
-    int Minimax(GameBoard board, int depth, bool isMaximizingPlayer)
-    {
-        int score = Evaluate(board.Board);
-
-        if (score == 10) return score + depth;  // X won
-        if (score == -10) return score - depth; // O won
-        if (!board.IsMovesLeft()) return 0;
+        //RECURSIVE STEP
 
         int bestScore = isMaximizingPlayer ? int.MinValue : int.MaxValue;
 
-        for (int i = 0; i < 3; i++)
+        foreach (Move m in board.GetNextMoves()) 
         {
-            for (int j = 0; j < 3; j++)
-            {
-                if (board.Board[i, j] == '\0')
-                {
-                    char currentChar = isMaximizingPlayer ? playerChar : aiChar;
-                    board.ExecuteMove(new Move(i, j), currentChar);
-                    bestScore = isMaximizingPlayer
-                        ? Mathf.Max(bestScore, Minimax(board, depth + 1, false))
-                        : Mathf.Min(bestScore, Minimax(board, depth + 1, true));
-                    board.ExecuteMove(new Move(i, j), '\0');
-                }
-            }
+            char currentChar = isMaximizingPlayer ? playerChar : aiChar;
+            board.ExecuteMove(m, currentChar);
+            bestScore = isMaximizingPlayer
+                ? Mathf.Max(bestScore, Minimax(board, depth + 1, false))
+                : Mathf.Min(bestScore, Minimax(board, depth + 1, true));
+            board.ExecuteMove(m, '\0');
         }
+
         return bestScore;
     }
 
     private void CheckEndgame()
     {
-        int endgame = Evaluate(gameBoard.Board);
+        int endgame = gameBoard.Evaluate();
 
         if (endgame > 0)
         {
             endgameDescription.text = "YOU WON!";
             endgamePanel.SetActive(true);
-            //gameEnded = true;
         }
         else if (endgame < 0)
         {
             endgameDescription.text = "AI WON!";
             endgamePanel.SetActive(true);
-            //gameEnded = true;
         }
         else if (!gameBoard.IsMovesLeft())
         {
             endgameDescription.text = "DRAW!";
             endgamePanel.SetActive(true);
-            //gameEnded = true;
         }
     }
 }
