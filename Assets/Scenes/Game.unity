@@ -563,6 +563,7 @@ MonoBehaviour:
   - {fileID: 980648697}
   - {fileID: 1945599940}
   playerTurn: 1
+  alphaBeta: 1
   endgamePanel: {fileID: 2108505735}
   endgameDescription: {fileID: 55704821}
 --- !u!1 &232593803
